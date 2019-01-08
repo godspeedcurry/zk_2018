@@ -7,8 +7,11 @@ steps:
 5.close the serial port
 6.end
  */
+#include<termios.h>  
+#include<unistd.h>
 #include <bits/stdc++.h>
 using namespace std;
+#include<fcntl.h>
 #define ERROR -1
 /*
 过程
@@ -39,7 +42,7 @@ O_SYNC等待物理 I/O 结束后再 write，包括更新文件属性的 I/O
  */
 int open_port(){
 	int fd;
-	fd = open("/dev/ttyUSB0",O_RDWR|O_NOCTTY|ONONBLOCK);//O_NONBLOCK设置为非阻塞模式，在read时不会阻塞住，在读的时候将read放在while循环中
+	fd = open("/dev/ttyUSB0",O_RDWR|O_NOCTTY|O_NONBLOCK);//O_NONBLOCK设置为非阻塞模式，在read时不会阻塞住，在读的时候将read放在while循环中
 	if(fd==-1){
 		perror("Can't open the serial port");
 	}
@@ -48,8 +51,8 @@ int open_port(){
 /*
 更加健壮的打开版本
  */
-int open_port(){
-	char *dev[]={"/dev/ttyUSB0","/dev/ttyS1","/dev/ttyS2"};
+int open_port(int fd,int comport){
+        char *dev[]={"/dev/ttyUSB0","/dev/ttyS1","/dev/ttyS2"};
 	if (comport==1){//串口1
 		fd = open( "/dev/ttyUSB0", O_RDWR|O_NOCTTY|O_NDELAY); 
 		if (-1 == fd){ 
